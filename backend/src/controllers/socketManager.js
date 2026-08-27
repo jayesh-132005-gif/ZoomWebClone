@@ -13,25 +13,25 @@ export const connectToSocket = (server) => {
         
         // Multiple handling of events
         socket.on("join_call", (path) => {
-
+            
+            // Adding user to room
             if(connections[path] === undefined) {
                 connections[path] = [];
             }
+
             connections[path].push(socket.id);
 
             timeOnLine[socket.id] = new Date();
 
-            // connections[path].forEach((ele) => {
-            //     io.to(ele);
-            // });
-
+            // Sending new users to old users
             for (let a = 0; a < connections[path].length; a++) {
                 io.to(connections[path][a]).emit(
                     "user_joined", 
                     socket.id, 
                     connections[path]);
             }
-
+            
+            // Sending old chat of room to new users
             if (messages[path] !== undefined) {
                 for (let a = 0; a < messages[path].length; a++) {
                     io.to(socket.id).emit(
@@ -41,23 +41,24 @@ export const connectToSocket = (server) => {
                         messages[path][a]['socket-id-sender']);   
                 }
             }
+
         });
 
     });
 
-        // socket.on("signal", (toId, message) => {
+        socket.on("signal", (toId, message) => {
 
-        // });
-
-
-        // socket.on("chat_message", (data, sender) => {
+        });
 
 
-        // });
+        socket.on("chat_message", (data, sender) => {
 
-        // socket.on("disconnected", () => {
 
-        // });
+        });
+
+        socket.on("disconnected", () => {
+
+        });
 
 
 
