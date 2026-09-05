@@ -11,7 +11,14 @@ let timeOnLine = {};
 // Socket server initialization function.
 export const connectToSocket = (server) => {
     // We create a socket server.
-    const io = new Server(server);
+    const io = new Server(server, {
+        cors: {
+            origin: "*",
+            methods: ['GET', 'POST'],
+            allowedHeaders: ["*"],
+            credentials: true
+        }
+    });
 
     // Socket server connection.
     io.on("connection", (socket) => {
