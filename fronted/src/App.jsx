@@ -1,9 +1,24 @@
+import "./App.css";
+import { Route, Routes, BrowserRouter } from "react-router-dom";
+import  LandingPage  from "./pages/landing.jsx";
 
-
-export default function App() {
+ function App() {
 
   return (
     <>
+      
+      <BrowserRouter>
+
+        <Routes>
+
+          <Route path="/" element={<LandingPage />}  />
+
+        </Routes>
+
+      </BrowserRouter>
+
+
+
     
 
     </>
@@ -11,4 +26,6 @@ export default function App() {
  
   );
 }
+
+export default App;
 
