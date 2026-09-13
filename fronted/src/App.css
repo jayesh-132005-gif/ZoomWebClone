@@ -3,5 +3,53 @@
     width: 100vw;
     background: url(/background.png);
     background-size: cover;
+    color: white;
+
 }
+
+.navHeader h2 {
+    margin: 0;
+} 
+
+.landingPageContainer nav {
+    padding-inline: 1.2rem;
+    padding-block: 1.6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.landingPageContainer nav h2{
+    font-size: 1.8rem;
+    font-weight: 500;
+}
+
+.landingPageContainer nav .navList {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+    cursor: pointer;
+}
+
+.landingMainContainer {
+    display: flex;
+    justify-content: space-between;
+    padding-inline: 2rem;
+    height: 70vh;
+    align-items: center;
+}
+
+
+.landingMainContainer > div:nth-child(1) {
+
+
+}
+
+.landingMainContainer > div:nth-child(2) {
+
+    
+}
+
+
 
