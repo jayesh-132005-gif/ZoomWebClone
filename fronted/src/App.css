@@ -44,8 +44,24 @@
 }
 
 
-.callingImage {
-    transform: translate(60px, 50px);
+.callingImage img { 
+    transform: translate(55px, 70px) scale(1.3);
+}
+
+.landingMainContainer > div:nth-child(1) div[role="button"] {
+    background-color: #D97500;
+    padding: 0.8rem 1.6rem;
+    border-radius: 0.4rem;
+    width: fit-content;
+    margin-top: 1.6rem;
+    text-decoration: none;
+}
+
+.landingMainContainer > div:nth-child(1) div[role="button"] a {
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+    font-size: 1.7rem;
 }
 
 

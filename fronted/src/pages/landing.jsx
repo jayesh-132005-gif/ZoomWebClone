@@ -1,5 +1,6 @@
 import "../App.css";
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function Landing() {
     return (
@@ -22,11 +23,15 @@ export default function Landing() {
                 <div>
                     <h1><span style={{color: "#ff9839" }}>Connect</span> with your Loved one</h1>
                     <p>Cover a distance by <span style={{color: "#ff9839" }}>Nexus Hub</span></p>
+                    <div role="button" className="getStartedButton">
+                        <Link to="/home">Get Started</Link>
+                    </div>
                 </div>
                 <div className="callingImage">
                     <img src="/callingImage.png" alt="callingImage" height = "400rem"/>
                 </div>
             </div>
         </div>
+
     );
 }
