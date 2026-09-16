@@ -23,8 +23,8 @@ export default function Landing() {
                     <h1><span style={{color: "#ff9839" }}>Connect</span> with your Loved one</h1>
                     <p>Cover a distance by <span style={{color: "#ff9839" }}>Nexus Hub</span></p>
                 </div>
-                <div>
-                    <img src="/callingImage.png" alt="callingImage" height = "300rem"/>
+                <div className="callingImage">
+                    <img src="/callingImage.png" alt="callingImage" height = "400rem"/>
                 </div>
             </div>
         </div>
