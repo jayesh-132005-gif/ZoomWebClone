@@ -29,6 +29,7 @@ const login = async (req, res) => {
         return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong in server", error: error.message });
 
     }
+    
 }
 
 const register = async (req, res) => {

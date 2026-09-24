@@ -23,8 +23,22 @@ export default function Authentication() {
   const [passwordError, setPasswordError] = useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
 
-  const validateInputs = (email, password) => {
+  const [name, setName] = useState("");
+  const [nameError, setNameError] = useState(false);
+  const [nameErrorMessage, setNameErrorMessage] = useState("");
+
+  const validateInputs = (name, email, password) => {
     let isValid = true;
+
+    // Name validation
+    if (!name || !/^[A-Za-z ]+$/.test(name)) {
+      setNameError(true);
+      setNameErrorMessage("Please enter a valid name.");
+      isValid = false;
+    } else {
+      setNameError(false);
+      setNameErrorMessage("");
+    }
 
     // Email validation
     if (!email || !/\S+@\S+\.\S+/.test(email)) {
@@ -57,17 +71,19 @@ export default function Authentication() {
 
     const formData = new FormData(event.currentTarget);
 
+    const name = formData.get("name");
     const email = formData.get("email");
     const password = formData.get("password");
     const remember = formData.get("remember");
 
-    const isValid = validateInputs(email, password);
+    const isValid = validateInputs(name, email, password);
 
     if (!isValid) {
       return;
     }
 
     console.log({
+      name,
       email,
       password,
       remember: Boolean(remember),
@@ -102,6 +118,25 @@ export default function Authentication() {
             noValidate
             className="authentication-form"
           >
+
+            <FormControl fullWidth className="authentication-field">
+              <FormLabel htmlFor="name">Name</FormLabel>
+
+              <TextField
+                size="small"
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Your name"
+                autoComplete="name"
+                required
+                fullWidth
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </FormControl>
+
+
             <FormControl fullWidth className="authentication-field">
               <FormLabel htmlFor="email">Email</FormLabel>
 
@@ -158,7 +193,7 @@ export default function Authentication() {
             >
               Sign in
             </Button>
-             
+
             {/* <Link
               component="button"
               type="button"

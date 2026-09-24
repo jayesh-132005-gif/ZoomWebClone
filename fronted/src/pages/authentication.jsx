@@ -93,7 +93,7 @@ export default function Authentication() {
             variant="h5"
             className="authentication-heading"
           >
-            Sign in
+            Sign In
           </Typography>
 
           <Box
