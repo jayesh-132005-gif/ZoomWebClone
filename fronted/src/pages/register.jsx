@@ -17,13 +17,18 @@ import Typography from "@mui/material/Typography";
 import "../App.css";
 
 export default function Authentication() {
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const [emailError, setEmailError] = useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = useState("");
 
   const [passwordError, setPasswordError] = useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
 
-  const [name, setName] = useState("");
+
   const [nameError, setNameError] = useState(false);
   const [nameErrorMessage, setNameErrorMessage] = useState("");
 
@@ -69,13 +74,6 @@ export default function Authentication() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const formData = new FormData(event.currentTarget);
-
-    const name = formData.get("name");
-    const email = formData.get("email");
-    const password = formData.get("password");
-    const remember = formData.get("remember");
-
     const isValid = validateInputs(name, email, password);
 
     if (!isValid) {
@@ -86,7 +84,6 @@ export default function Authentication() {
       name,
       email,
       password,
-      remember: Boolean(remember),
     });
 
     // Baad mein yahan backend login API call karenge.
@@ -127,12 +124,14 @@ export default function Authentication() {
                 id="name"
                 name="name"
                 type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 placeholder="Your name"
                 autoComplete="name"
                 required
                 fullWidth
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                error={nameError}
+                helperText={nameErrorMessage}
               />
             </FormControl>
 
@@ -145,6 +144,8 @@ export default function Authentication() {
                 id="email"
                 name="email"
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
                 autoComplete="email"
                 autoFocus
@@ -163,6 +164,8 @@ export default function Authentication() {
                 id="password"
                 name="password"
                 type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••"
                 autoComplete="current-password"
                 required
@@ -172,7 +175,7 @@ export default function Authentication() {
               />
             </FormControl>
 
-            <FormControlLabel
+            {/* <FormControlLabel
               className="remember-me"
               control={
                 <Checkbox
@@ -183,15 +186,15 @@ export default function Authentication() {
                 />
               }
               label="Remember me"
-            />
+            /> */}
 
             <Button
-              type="button"
+              type="submit"
               fullWidth
               variant="contained"
               className="sign-in-button"
             >
-              Sign in
+              Sign up
             </Button>
 
             {/* <Link
