@@ -17,6 +17,11 @@ import Typography from "@mui/material/Typography";
 import "../App.css";
 
 export default function Authentication() {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [remember, setRemember] = useState(false);
+
   const [emailError, setEmailError] = useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = useState("");
 
@@ -54,12 +59,6 @@ export default function Authentication() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    const formData = new FormData(event.currentTarget);
-
-    const email = formData.get("email");
-    const password = formData.get("password");
-    const remember = formData.get("remember");
 
     const isValid = validateInputs(email, password);
 
@@ -110,6 +109,8 @@ export default function Authentication() {
                 id="email"
                 name="email"
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
                 autoComplete="email"
                 autoFocus
@@ -128,6 +129,8 @@ export default function Authentication() {
                 id="password"
                 name="password"
                 type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••"
                 autoComplete="current-password"
                 required
@@ -144,6 +147,8 @@ export default function Authentication() {
                   size="small"
                   name="remember"
                   value="true"
+                  checked={remember}
+                  onChange={(e) => setRemember(e.target.checked)}
                   color="primary"
                 />
               }
@@ -151,7 +156,7 @@ export default function Authentication() {
             />
 
             <Button
-              type="button"
+              type="submit"
               fullWidth
               variant="contained"
               className="sign-in-button"
