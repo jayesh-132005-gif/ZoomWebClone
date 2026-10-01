@@ -2,7 +2,7 @@ import "./App.css";
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 import  LandingPage  from "./pages/landing.jsx";
 import  Authentication from "./pages/authentication.jsx";
-import  Register from "./pages/register.jsx";
+import  Register from "./pages/Register.jsx";
 import  Home from "./pages/home.jsx";
 
  function App() {

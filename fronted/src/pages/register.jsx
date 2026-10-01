@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useContext } from "react";
+import AuthContext from "../contexts/authContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -16,14 +19,18 @@ import Typography from "@mui/material/Typography";
 
 import "../App.css";
 
-export default function Authentication() {
+export default function Register() {
+
+  const { register } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const [emailError, setEmailError] = useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = useState("");
+  const [usernameError, setUsernameError] = useState(false);
+  const [usernameErrorMessage, setUsernameErrorMessage] = useState("");
+
 
   const [passwordError, setPasswordError] = useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
@@ -32,7 +39,7 @@ export default function Authentication() {
   const [nameError, setNameError] = useState(false);
   const [nameErrorMessage, setNameErrorMessage] = useState("");
 
-  const validateInputs = (name, email, password) => {
+  const validateInputs = (name, username, password) => {
     let isValid = true;
 
     // Name validation
@@ -45,15 +52,16 @@ export default function Authentication() {
       setNameErrorMessage("");
     }
 
-    // Email validation
-    if (!email || !/\S+@\S+\.\S+/.test(email)) {
-      setEmailError(true);
-      setEmailErrorMessage("Please enter a valid email address.");
+    // Username validation
+    if (!username || !/^[A-Za-z0-9_]+$/.test(username)) {
+      setUsernameError(true);
+      setUsernameErrorMessage("Please enter a valid username.");
       isValid = false;
     } else {
-      setEmailError(false);
-      setEmailErrorMessage("");
+      setUsernameError(false);
+      setUsernameErrorMessage("");
     }
+
 
     // Password validation
     if (!password || password.length < 6) {
@@ -71,22 +79,26 @@ export default function Authentication() {
   };
 
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const isValid = validateInputs(name, email, password);
+    const isValid = validateInputs(name, username, password);
 
     if (!isValid) {
       return;
     }
 
-    console.log({
-      name,
-      email,
-      password,
-    });
+    // Call the register function from the context
+    const result = await register(name, username, password);
 
-    // Baad mein yahan backend login API call karenge.
+    if (result.success) {
+       navigate("/auth");
+    } else {
+
+      // Handle registration error
+      console.log("Registration failed:", result.error);
+
+    }
   };
 
 
@@ -137,22 +149,22 @@ export default function Authentication() {
 
 
             <FormControl fullWidth className="authentication-field">
-              <FormLabel htmlFor="email">Email</FormLabel>
+              <FormLabel htmlFor="username">Username  </FormLabel>
 
               <TextField
                 size="small"
-                id="email"
-                name="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
-                autoComplete="email"
+                id="username"
+                name="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="your_username"
+                autoComplete="username"
                 autoFocus
                 required
                 fullWidth
-                error={emailError}
-                helperText={emailErrorMessage}
+                error={usernameError}
+                helperText={usernameErrorMessage}
               />
             </FormControl>
 
@@ -175,18 +187,6 @@ export default function Authentication() {
               />
             </FormControl>
 
-            {/* <FormControlLabel
-              className="remember-me"
-              control={
-                <Checkbox
-                  size="small"
-                  name="remember"
-                  value="true"
-                  color="primary"
-                />
-              }
-              label="Remember me"
-            /> */}
 
             <Button
               type="submit"
@@ -197,40 +197,10 @@ export default function Authentication() {
               Sign up
             </Button>
 
-            {/* <Link
-              component="button"
-              type="button"
-              variant="body2"
-              className="forgot-password"
-              onClick={() => alert("Forgot password clicked")}
-            >
-              Forgot your password?
-            </Link> */}
-
 
           </Box>
 
           <Divider className="authentication-divider">or</Divider>
-
-          {/* <Button
-            size="small"
-            fullWidth
-            variant="outlined"
-            className="social-button"
-            onClick={() => alert("Google sign in clicked")}
-          >
-            Sign in with Google
-          </Button> */}
-
-          {/* <Button
-            size="small"
-            fullWidth
-            variant="outlined"
-            className="social-button"
-            onClick={() => alert("Facebook sign in clicked")}
-          >
-            Sign in with Facebook
-          </Button> */}
 
           <Typography
             variant="body2"

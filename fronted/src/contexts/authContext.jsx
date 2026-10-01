@@ -11,25 +11,50 @@ const AuthProvider = ({ children }) => {
 
 
   // 2. Register function
-  const register = async (name, email, password) => {
+  const register = async (name, username, password) => {
     setLoading(true);
 
-    const response = await fetch("YOUR_BACKEND_URL/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name,
-        email,
-        password,
-      }),
-    });
+    // Try and catch block to handle network errors
+    try {
+      const response = await fetch("http://localhost:8000/api/v1/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          username,
+          password,
+        }),
+      });
 
 
 
+      if (!response.ok) {
+        const errorData = await response.json();
+        return {
+          success: false,
+          error: errorData,
+        }
+      }
 
+      const data = await response.json();
+      return {
+        success: true,
+        data: data,
+      }
 
+    } catch (error) {
+      return {
+        success: false,
+        error: {
+          message: "Network error. Please try again.",
+        },
+      };
+
+    } finally {
+      setLoading(false);
+    }
 
   };
 
@@ -41,32 +66,32 @@ const AuthProvider = ({ children }) => {
 
 
 
-};
 
 
-// 3. Login function
-const login = async () => {
-  // login logic later
-};
+
+  // 3. Login function
+  const login = async () => {
+    // login logic later
+  };
 
 
-// 4. Logout function
-const logout = () => {
-  // logout logic later
-};
+  // 4. Logout function
+  const logout = () => {
+    // logout logic later
+  };
 
 
-// 5. Provide everything to children
-return (
-  <AuthContext.Provider
-    value={{
-      // states
-      // functions
-    }}
-  >
-    {children}
-  </AuthContext.Provider>
-);
+  // 5. Provide everything to children
+  return (
+    <AuthContext.Provider
+      value={{
+        // states
+        // functions
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export { AuthProvider };
