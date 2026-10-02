@@ -28,8 +28,6 @@ const AuthProvider = ({ children }) => {
         }),
       });
 
-
-
       if (!response.ok) {
         const errorData = await response.json();
         return {
@@ -59,16 +57,6 @@ const AuthProvider = ({ children }) => {
   };
 
 
-
-
-
-
-
-
-
-
-
-
   // 3. Login function
   const login = async () => {
     // login logic later
@@ -86,7 +74,14 @@ const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         // states
+        user,
+        isAuthenticated,
+        loading,
+        
         // functions
+        register,
+        login,
+        logout
       }}
     >
       {children}

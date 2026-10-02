@@ -35,6 +35,8 @@ export default function Register() {
   const [passwordError, setPasswordError] = useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
 
+  const [registerError, setRegisterError] = useState("");
+
 
   const [nameError, setNameError] = useState(false);
   const [nameErrorMessage, setNameErrorMessage] = useState("");
@@ -76,27 +78,28 @@ export default function Register() {
     }
 
     return isValid;
+
+
   };
 
 
+  // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     const isValid = validateInputs(name, username, password);
-
     if (!isValid) {
       return;
     }
 
     // Call the register function from the context
     const result = await register(name, username, password);
-
     if (result.success) {
-       navigate("/auth");
+      navigate("/auth");
     } else {
 
       // Handle registration error
-      console.log("Registration failed:", result.error);
+      setRegisterError(result.error.message);
 
     }
   };
@@ -157,7 +160,10 @@ export default function Register() {
                 name="username"
                 type="text"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => { 
+                  setUsername(e.target.value);
+                  setRegisterError("");
+                }}
                 placeholder="your_username"
                 autoComplete="username"
                 autoFocus
@@ -187,6 +193,12 @@ export default function Register() {
               />
             </FormControl>
 
+           
+            {registerError && (
+              <Typography color="error">
+                {registerError}
+              </Typography>
+            )}
 
             <Button
               type="submit"
