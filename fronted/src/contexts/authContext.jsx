@@ -58,14 +58,65 @@ const AuthProvider = ({ children }) => {
 
 
   // 3. Login function
-  const login = async () => {
-    // login logic later
+  const login = async (username, password) => {
+    setLoading(true);
+
+    // Try and catch block to handle network errors
+    try {
+      const response = await fetch("http://localhost:8000/api/v1/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          password,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        return {
+          success: false,
+          error: errorData,
+        }
+      }
+
+      const data = await response.json();
+      if (!data.token) {
+        return {
+          success: false,
+          error: {
+            message: "Login response did not contain a token.",
+          },
+        };
+      }
+      sessionStorage.setItem("token", data.token);
+      setIsAuthenticated(true);
+      return {
+        success: true,
+        data: data,
+      };
+
+    } catch (error) {
+      return {
+        success: false,
+        error: {
+          message: "Network error. Please try again.",
+        },
+      };
+
+    } finally {
+      setLoading(false);
+    }
+
   };
 
 
   // 4. Logout function
   const logout = () => {
-    // logout logic later
+    sessionStorage.removeItem("token");
+    setIsAuthenticated(false);
   };
 
 
@@ -77,7 +128,7 @@ const AuthProvider = ({ children }) => {
         user,
         isAuthenticated,
         loading,
-        
+
         // functions
         register,
         login,

@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import AuthContext from "../contexts/authContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -18,27 +20,33 @@ import "../App.css";
 
 export default function Authentication() {
 
-  const [email, setEmail] = useState("");
+  const { login, loading } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
 
-  const [emailError, setEmailError] = useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = useState("");
+  const [loginError, setLoginError] = useState("");
+
+  const [usernameError, setUsernameError] = useState(false);
+  const [usernameErrorMessage, setUsernameErrorMessage] = useState("");
+
 
   const [passwordError, setPasswordError] = useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
 
-  const validateInputs = (email, password) => {
+  const validateInputs = (username, password) => {
     let isValid = true;
 
-    // Email validation
-    if (!email || !/\S+@\S+\.\S+/.test(email)) {
-      setEmailError(true);
-      setEmailErrorMessage("Please enter a valid email address.");
+    // Username validation
+    if (!username || !/^[A-Za-z0-9_]+$/.test(username)) {
+      setUsernameError(true);
+      setUsernameErrorMessage("Please enter a valid username.");
       isValid = false;
     } else {
-      setEmailError(false);
-      setEmailErrorMessage("");
+      setUsernameError(false);
+      setUsernameErrorMessage("");
     }
 
     // Password validation
@@ -57,22 +65,27 @@ export default function Authentication() {
   };
 
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoginError("");
 
-    const isValid = validateInputs(email, password);
+    const isValid = validateInputs(username, password);
 
     if (!isValid) {
       return;
     }
 
-    console.log({
-      email,
-      password,
-      remember: Boolean(remember),
-    });
+    const result = await login(username, password);
+    if (!result.success) {
+      setLoginError(
+        result.error?.message || "Login failed. Please try again."
+      );
+      return;
+    }
 
-    // Baad mein yahan backend login API call karenge.
+    // Login successful — next step mein redirect karenge
+    navigate("/home");
+
   };
 
 
@@ -102,22 +115,22 @@ export default function Authentication() {
             className="authentication-form"
           >
             <FormControl fullWidth className="authentication-field">
-              <FormLabel htmlFor="email">Email</FormLabel>
+              <FormLabel htmlFor="username">Username</FormLabel>
 
               <TextField
                 size="small"
-                id="email"
-                name="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
-                autoComplete="email"
+                id="username"
+                name="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="your_username"
+                autoComplete="username"
                 autoFocus
                 required
                 fullWidth
-                error={emailError}
-                helperText={emailErrorMessage}
+                error={usernameError}
+                helperText={usernameErrorMessage}
               />
             </FormControl>
 
@@ -139,6 +152,12 @@ export default function Authentication() {
                 helperText={passwordErrorMessage}
               />
             </FormControl>
+
+            {loginError && (
+              <Typography color="error" variant="body2">
+                {loginError}
+              </Typography>
+            )}
 
             <FormControlLabel
               className="remember-me"
@@ -163,41 +182,11 @@ export default function Authentication() {
             >
               Sign in
             </Button>
-             
-            {/* <Link
-              component="button"
-              type="button"
-              variant="body2"
-              className="forgot-password"
-              onClick={() => alert("Forgot password clicked")}
-            >
-              Forgot your password?
-            </Link> */}
 
 
           </Box>
 
           <Divider className="authentication-divider">or</Divider>
-
-          {/* <Button
-            size="small"
-            fullWidth
-            variant="outlined"
-            className="social-button"
-            onClick={() => alert("Google sign in clicked")}
-          >
-            Sign in with Google
-          </Button> */}
-
-          {/* <Button
-            size="small"
-            fullWidth
-            variant="outlined"
-            className="social-button"
-            onClick={() => alert("Facebook sign in clicked")}
-          >
-            Sign in with Facebook
-          </Button> */}
 
           <Typography
             variant="body2"

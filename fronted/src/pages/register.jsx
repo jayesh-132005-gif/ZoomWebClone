@@ -111,7 +111,7 @@ export default function Register() {
       <CssBaseline />
 
       <Stack
-        className="authentication-page"
+        className="register-page"
         alignItems="center"
         justifyContent="center"
       >
