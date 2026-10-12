@@ -15,8 +15,8 @@ const login = async (req, res) => {
     try {
         const user = await User.findOne({ username });
         if (!user) {
-            return res.status(httpStatus.NOT_FOUND).json({ 
-                message: "User not found" 
+            return res.status(httpStatus.UNAUTHORIZED).json({ 
+                message: "Invalid username and password" 
             });
         }
 
@@ -32,7 +32,7 @@ const login = async (req, res) => {
         } else {
 
             return res.status(httpStatus.UNAUTHORIZED).json({ 
-                message: "Invalid password" 
+                message: "Invalid username and password" 
             });
 
         }
