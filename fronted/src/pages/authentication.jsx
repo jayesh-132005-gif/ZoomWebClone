@@ -16,7 +16,7 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
-import "../App.css";
+import "../styles/authentication.css";
 
 export default function Authentication() {
 

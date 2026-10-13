@@ -1,0 +1,178 @@
+/* =========================
+   REGISTER PAGE
+========================= */
+
+.register-page {
+  position: fixed;
+  inset: 0;
+
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 16px;
+  overflow-y: auto;
+
+  background: radial-gradient(
+    circle,
+    #f0f7ff 0%,
+    #ffffff 70%
+  );
+}
+
+
+/* =========================
+   REGISTER CARD
+========================= */
+
+.register-page .authentication-card {
+  width: 100%;
+  max-width: 400px;
+
+  margin: auto;
+  padding: 24px;
+
+  box-sizing: border-box;
+
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 14px;
+
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 12px 30px rgba(0, 0, 0, 0.06);
+}
+
+
+/* =========================
+   HEADING
+========================= */
+
+.register-page .authentication-heading {
+  margin-bottom: 16px;
+
+  color: #1a1a1a;
+  font-weight: 700;
+}
+
+
+/* =========================
+   FORM
+========================= */
+
+.register-page .authentication-form {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+}
+
+.register-page .authentication-field {
+  margin-bottom: 10px;
+}
+
+.register-page .authentication-field .MuiFormLabel-root {
+  margin-bottom: 5px;
+  color: #555555;
+}
+
+
+/* =========================
+   INPUT FIELDS
+========================= */
+
+.register-page .authentication-field .MuiOutlinedInput-root {
+  background-color: #ffffff;
+  border-radius: 5px;
+}
+
+.register-page .authentication-field .MuiOutlinedInput-notchedOutline {
+  border-color: #d0d0d0;
+}
+
+.register-page .authentication-field .MuiOutlinedInput-root:hover
+.MuiOutlinedInput-notchedOutline {
+  border-color: #888888;
+}
+
+.register-page .authentication-field .MuiOutlinedInput-root.Mui-focused
+.MuiOutlinedInput-notchedOutline {
+  border-color: #1976d2;
+}
+
+
+/* =========================
+   SIGN-UP BUTTON
+========================= */
+
+.register-page .sign-in-button {
+  min-height: 46px;
+
+  margin-top: 4px;
+  margin-bottom: 10px;
+
+  border-radius: 5px;
+  text-transform: uppercase;
+
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+
+/* =========================
+   DIVIDER
+========================= */
+
+.register-page .authentication-divider {
+  margin: 16px 0;
+}
+
+
+/* =========================
+   SIGN-IN LINK TEXT
+========================= */
+
+.register-page .create-account-text {
+  margin-top: 8px;
+  text-align: center;
+}
+
+.register-page .create-account-text a {
+  color: #1976d2;
+  text-decoration: underline;
+}
+
+
+/* =========================
+   ERROR MESSAGE
+========================= */
+
+.register-page .MuiFormHelperText-root {
+  margin-left: 0;
+}
+
+.register-page .MuiFormHelperText-root.Mui-error {
+  color: #d32f2f;
+}
+
+
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
+
+@media (max-width: 480px) {
+  .register-page {
+    padding: 12px;
+  }
+
+  .register-page .authentication-card {
+    max-width: 360px;
+    padding: 20px;
+  }
+}
