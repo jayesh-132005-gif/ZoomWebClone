@@ -6,7 +6,10 @@ const AuthProvider = ({ children }) => {
 
   // 1. Authentication states
   const [user, setUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // Check if a token exists in sessionStorage to determine if the user is authenticated
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    () => Boolean(sessionStorage.getItem("token"))
+  );
   const [loading, setLoading] = useState(false);
 
 
