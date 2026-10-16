@@ -5,6 +5,7 @@ import  Authentication from "./pages/authentication.jsx";
 import  Register from "./pages/Register.jsx";
 import  Home from "./pages/home.jsx";
 import ProtectedRoute from "./components/protectedRoute.jsx";
+import VideoMeetComponent from "./pages/videoMeet.jsx";
 
 
  function App() {
@@ -25,6 +26,9 @@ import ProtectedRoute from "./components/protectedRoute.jsx";
           <Route element={<ProtectedRoute />}>
             <Route path="/home" element={<Home />} />
           </Route>
+          <Route element={<ProtectedRoute />}>
+            <Route path="/video-meet" element={<VideoMeetComponent />} />
+          </Route> 
 
         </Routes>
 
