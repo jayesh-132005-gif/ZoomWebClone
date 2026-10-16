@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import server from "../utils/server.js";
 
 // Backend server base url
@@ -39,6 +39,11 @@ export default function VideoMeetComponent() {
             console.error("Camera/Microphone access failed:", error);
         }
     };
+
+     // Effect hook to request camera and microphone permissions when the component mounts.
+    useEffect(() => {
+        getPermissions();
+    }, []);
 
 
     return (
