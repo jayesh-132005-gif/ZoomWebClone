@@ -114,7 +114,6 @@ export default function VideoMeetComponent() {
 
             <video ref={localVideoRef} autoPlay muted />
 
-
             <p>Camera: {video ? "On" : "Off"}</p>
 
             <button onClick={handleVideo}>
