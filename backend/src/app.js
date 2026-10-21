@@ -1,5 +1,6 @@
 import express from "express";
 import { createServer } from "node:http";
+import "dotenv/config";
 
 import { Server } from "socket.io";
 
@@ -38,7 +39,9 @@ app.get("/", (req, res) => {
 const start = async () => {
 
     // TO CONNECT A DATABASE
-    const connectionDb =  await mongoose.connect("mongodb+srv://devjayeshsingh_db_user:JsG24139500@zoomwebclone.fgewwob.mongodb.net/?appName=ZoomWebClone");
+    const connectionDb =  await mongoose.connect(
+        process.env.MONGODB_URI
+    );
     console.log(`mongodb connected: ${connectionDb.connection.host}`);
 
     // TO LISTEN TO A SERVER
