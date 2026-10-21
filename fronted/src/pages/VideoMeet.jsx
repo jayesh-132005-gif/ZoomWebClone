@@ -23,6 +23,8 @@ export default function VideoMeetComponent() {
     const [videoAvailable, setVideoAvailable] = useState(false);
     const [audioAvailable, setAudioAvailable] = useState(false);
 
+    const [mediaError, setMediaError] = useState("");
+
     const localVideoRef = useRef(null);
     const localStreamRef = useRef(null);
 
@@ -45,9 +47,29 @@ export default function VideoMeetComponent() {
                 localVideoRef.current.srcObject = stream;
             }
 
-        } catch (error) {
-            console.error("Camera/Microphone access failed:", error);
         }
+        catch (error) {
+            console.error("Camera/Microphone access failed:", error);
+
+            if (error.name === "NotAllowedError") {
+                setMediaError(
+                    "Camera or microphone permission denied. Please allow access in your browser."
+                );
+            } else if (error.name === "NotFoundError") {
+                setMediaError(
+                    "Camera or microphone device not found."
+                );
+            } else if (error.name === "NotReadableError") {
+                setMediaError(
+                    "Camera or microphone may be in use by another application."
+                );
+            } else {
+                setMediaError(
+                    "Unable to access camera or microphone. Please try again."
+                );
+            }
+        }
+
 
     };
 
@@ -80,6 +102,24 @@ export default function VideoMeetComponent() {
     // Effect hook to request camera and microphone permissions when the component mounts.
     useEffect(() => {
         getPermissions();
+
+        return () => {
+            console.log("Stopping camera and microphone");
+
+            const stream = localStreamRef.current;
+
+            if (stream) {
+                stream.getTracks().forEach((track) => {
+                    track.stop();
+                });
+
+                localStreamRef.current = null;
+            }
+
+            if (localVideoRef.current) {
+                localVideoRef.current.srcObject = null;
+            }
+        };
     }, []);
 
     // Effect hook to enable or disable video tracks based on the 'video' state.
