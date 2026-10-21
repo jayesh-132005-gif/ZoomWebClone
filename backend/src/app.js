@@ -40,7 +40,7 @@ const start = async () => {
 
     // TO CONNECT A DATABASE
     const connectionDb =  await mongoose.connect(
-        process.env.MONGODB_URI
+        process.env.MONGODB_URL
     );
     console.log(`mongodb connected: ${connectionDb.connection.host}`);
 
