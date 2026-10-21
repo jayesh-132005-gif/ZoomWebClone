@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import server from "../utils/server.js";
+import { io } from "socket.io-client";
 
 // Backend server base URL
 const server_url = server;
@@ -51,6 +52,11 @@ export default function VideoMeetComponent() {
     const [video, setVideo] = useState(true);
     const [audio, setAudio] = useState(true);
 
+    // Screen sharing control states
+    const [askForUsername, setAskForUsername] = useState(true);
+    const [username, setUsername] = useState("");
+    const [usernameError, setUsernameError] = useState("");
+
     // Device availability states
     const [videoAvailable, setVideoAvailable] = useState(false);
     const [audioAvailable, setAudioAvailable] = useState(false);
@@ -67,6 +73,14 @@ export default function VideoMeetComponent() {
     // Identifies the latest permission request.
     // It helps prevent stale permission requests from creating leaked streams.
     const permissionRequestIdRef = useRef(0);
+
+    // Socket state.
+    const socketRef = useRef(null);
+    const socketIdRef = useRef(null);
+
+    // Socket references.
+    const [socketStatus, setSocketStatus] = useState("Not connected");
+    const [socketError, setSocketError] = useState("");
 
     // Request camera, microphone and screen-sharing capability.
     const getPermissions = useCallback(async (requestId) => {
@@ -260,6 +274,69 @@ export default function VideoMeetComponent() {
         }
     }, []);
 
+    // Connect to the socket server.
+    const connectToSocketServer = () => {
+        if (socketRef.current) return;
+
+        setSocketStatus("Connecting...");
+        setSocketError("");
+
+        const socket = io(server_url, {
+            reconnection: true,
+            timeout: 10000
+        });
+
+        socketRef.current = socket;
+
+        socket.on("connect", () => {
+            socketIdRef.current = socket.id;
+
+            setSocketStatus("Connected");
+            setSocketError("");
+
+            console.log("Socket connected:", socket.id);
+
+            // Join the meeting room with the provided username.
+            const roomPath = window.location.href;
+            socket.emit("join_call", roomPath);
+            console.log("Joining meeting room:", roomPath);
+            
+        });
+
+        socket.on("connect_error", (error) => {
+            setSocketStatus("Connection failed");
+            setSocketError(
+                "Unable to connect to the meeting server. Check that the backend is running."
+            );
+
+            console.error("Socket connection failed:", error.message);
+        });
+
+        socket.on("disconnect", (reason) => {
+            socketIdRef.current = null;
+            setSocketStatus("Disconnected");
+
+            console.log("Socket disconnected:", reason);
+        });
+    };
+
+    // Connect to the lobby.
+    const handleLobbyConnect = () => {
+        const trimmedUsername = username.trim();
+
+        if (!trimmedUsername) {
+            setUsernameError("Please enter a username.");
+            return;
+        }
+
+        setUsername(trimmedUsername);
+        setUsernameError("");
+        setAskForUsername(false);
+
+        // Establish socket connection after username is set.
+        connectToSocketServer();
+    };
+
     // Toggle camera tracks.
     const handleVideo = () => {
         if (!videoAvailable) return;
@@ -299,6 +376,7 @@ export default function VideoMeetComponent() {
         void getPermissions(requestId);
 
         return () => {
+
             // Invalidate any permission request still in progress.
             permissionRequestIdRef.current += 1;
 
@@ -310,6 +388,16 @@ export default function VideoMeetComponent() {
             if (localVideoRef.current) {
                 localVideoRef.current.srcObject = null;
             }
+
+            // Disconnect from the socket server on unmount.
+            if (socketRef.current) {
+                socketRef.current.disconnect();
+                socketRef.current.removeAllListeners();
+
+                socketRef.current = null;
+                socketIdRef.current = null;
+            }
+
         };
     }, [getPermissions]);
 
@@ -337,11 +425,46 @@ export default function VideoMeetComponent() {
 
     return (
         <div>
-            <h2>Meeting Room</h2>
+            {askForUsername ? (
+                <div>
+                    <h2>Enter into Lobby</h2>
+
+                    <input
+                        type="text"
+                        placeholder="Enter your username"
+                        value={username}
+                        onChange={(e) => {
+                            setUsername(e.target.value);
+                            setUsernameError("");
+                        }}
+                    />
+
+                    <button onClick={handleLobbyConnect}>
+                        Connect
+                    </button>
+                    <br />
+                    <br />
+
+                    {usernameError && (
+                        <p role="alert">{usernameError}</p>
+                    )}
+                </div>
+            ) : (
+                <h2>Meeting Room</h2>
+            )}
 
             {mediaError && (
                 <p role="alert">{mediaError}</p>
             )}
+
+            {!askForUsername && (
+                <p>Socket status: {socketStatus}</p>
+            )}
+
+            {socketError && (
+                <p role="alert">{socketError}</p>
+            )}
+
 
             <video
                 ref={localVideoRef}
@@ -350,28 +473,33 @@ export default function VideoMeetComponent() {
                 playsInline
             />
 
-            <p>Camera: {video ? "On" : "Off"}</p>
+            {!askForUsername && (
+                <>
+                    <p>Camera: {video ? "On" : "Off"}</p>
 
-            <button
-                onClick={handleVideo}
-                disabled={!videoAvailable}
-            >
-                {video ? "Turn Camera Off" : "Turn Camera On"}
-            </button>
+                    <button
+                        onClick={handleVideo}
+                        disabled={!videoAvailable}
+                    >
+                        {video ? "Turn Camera Off" : "Turn Camera On"}
+                    </button>
 
-            <p>Microphone: {audio ? "On" : "Off"}</p>
+                    <p>Microphone: {audio ? "On" : "Off"}</p>
 
-            <button
-                onClick={handleAudio}
-                disabled={!audioAvailable}
-            >
-                {audio ? "Turn Microphone Off" : "Turn Microphone On"}
-            </button>
+                    <button
+                        onClick={handleAudio}
+                        disabled={!audioAvailable}
+                    >
+                        {audio ? "Turn Microphone Off" : "Turn Microphone On"}
+                    </button>
 
-            <p>
-                Screen Sharing:{" "}
-                {screenAvailable ? "Supported" : "Not supported"}
-            </p>
+                    <p>
+                        Screen Sharing:{" "}
+                        {screenAvailable ? "Supported" : "Not supported"}
+                    </p>
+                </>
+            )}
         </div>
     );
+
 }

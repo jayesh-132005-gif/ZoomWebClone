@@ -108,14 +108,9 @@ export const connectToSocket = (server) => {
                 }
             }
         });
-
-
     });
-
-
-
-       return io;
-    }
+    return io;
+}
 
 
 
