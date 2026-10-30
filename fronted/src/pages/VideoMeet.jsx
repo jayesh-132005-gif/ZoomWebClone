@@ -288,6 +288,7 @@ export default function VideoMeetComponent() {
 
         socketRef.current = socket;
 
+        // Fronted listening connect event from backend and emit join_call event to backend
         socket.on("connect", () => {
             socketIdRef.current = socket.id;
 
@@ -300,7 +301,55 @@ export default function VideoMeetComponent() {
             const roomPath = window.location.href;
             socket.emit("join_call", roomPath);
             console.log("Joining meeting room:", roomPath);
-            
+
+        });
+
+        // Fronted listening user_joined event from backend
+        socket.on("user_joined", async (newUserId, participants) => {
+            console.log("New user joined:", newUserId);
+            console.log("Participants in room:", participants);
+
+            participants.forEach(async (participantId) => {
+                // Skip our own socket ID
+                if (participantId === socketIdRef.current) {
+                    return;
+                }
+
+                // Avoid duplicate peer connections
+                if (connections.current[participantId]) {
+                    return;
+                }
+
+                // Create Peer Connection
+                const peerConnection = new RTCPeerConnection(peerConfig);
+
+                // Store Peer Connection
+                connections.current[participantId] = peerConnection;
+                console.log("Peer connection created for:", participantId);
+
+                peerConnection.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        console.log("New ICE candidate:", event.candidate);
+                    } else {
+                        console.log("ICE candidate gathering completed");
+                    }
+                };
+
+                if (newUserId === socketIdRef.current) {
+                    const offer = await peerConnection.createOffer();
+
+                    await peerConnection.setLocalDescription(offer);
+
+                    socket.emit("signal", participantId, {
+                        type: "offer",
+                        offer: offer
+                    });
+
+                    console.log("Offer sent to:", participantId);
+                }
+
+
+            });
         });
 
         socket.on("connect_error", (error) => {

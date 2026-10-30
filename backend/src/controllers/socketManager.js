@@ -38,7 +38,8 @@ export const connectToSocket = (server) => {
                 io.to(connections[path][a]).emit(
                     "user_joined", 
                     socket.id, 
-                    connections[path]);
+                    connections[path]
+                );
             }
             
             // Sending old chat of room to new users.
